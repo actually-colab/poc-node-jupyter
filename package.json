@@ -1,0 +1,16 @@
+{
+  "name": "poc-node-jupyter",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "fib": "node fib.js",
+    "matplotlib": "node matplotlib.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@jupyterlab/services": "^6.0.3",
+    "jupyter-js-services": "^0.21.1",
+    "ws": "^7.4.2",
+    "xmlhttprequest": "^1.8.0"
+  }
+}
