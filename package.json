@@ -6,7 +6,8 @@
     "fib": "node fib.js",
     "fib:new": "node new_fib.js",
     "matplotlib": "node matplotlib.js",
-    "matplotlib:new": "node new_matplotlib.js"
+    "matplotlib:new": "node new_matplotlib.js",
+    "kernel": "jupyter kernelgateway"
   },
   "license": "ISC",
   "dependencies": {
