@@ -4,12 +4,15 @@
   "main": "index.js",
   "scripts": {
     "fib": "node fib.js",
-    "matplotlib": "node matplotlib.js"
+    "fib:new": "node new_fib.js",
+    "matplotlib": "node matplotlib.js",
+    "matplotlib:new": "node new_matplotlib.js"
   },
   "license": "ISC",
   "dependencies": {
     "@jupyterlab/services": "^6.0.3",
     "jupyter-js-services": "^0.21.1",
+    "node-fetch": "^2.6.1",
     "ws": "^7.4.2",
     "xmlhttprequest": "^1.8.0"
   }
