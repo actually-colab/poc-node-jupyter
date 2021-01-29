@@ -58,7 +58,7 @@ jupyter.KernelSpecAPI.getSpecs(settings)
       .startNew({
         name: demoInfo.kernelName,
       })
-      .then((kernel) => {
+      .then(async (kernel) => {
         // execute some code
         console.log("Executing sample code");
 
@@ -69,26 +69,26 @@ jupyter.KernelSpecAPI.getSpecs(settings)
           false
         );
 
-        future.done.then(() => {
-          const future2 = kernel.requestExecute(
-            {
-              code: "def fib1(n):\n    return fib(n + 1)\nprint(fib1(4))",
-            },
-            false
-          );
-
-          future2.done.then(() => {
-            process.exit(0);
-          });
-
-          future2.onIOPub = (msg) => {
-            console.log("Received message", msg);
-          };
-        });
-
         future.onIOPub = (msg) => {
           console.log("Received message", msg);
         };
+
+        await future.done;
+
+        let future2 = kernel.requestExecute(
+          {
+            code: "def fib1(n):\n    return fib(n + 1)\nprint(fib1(4))",
+          },
+          false
+        );
+
+        future2.onIOPub = (msg) => {
+          console.log("Received message", msg);
+        };
+
+        await future2.done;
+
+        process.exit(0);
       })
       .catch((req) => {
         console.log("Error starting new kernel:", req);
