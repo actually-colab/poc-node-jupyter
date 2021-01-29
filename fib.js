@@ -48,6 +48,7 @@ jupyter.Kernel.getSpecs({
 
     // request a new kernel
     console.log("Starting kernel:", demoLang);
+
     jupyter.Kernel.startNew({
       baseUrl: gatewayUrl,
       wsUrl: gatewayWsUrl, // passing this separately to demonstrate basic auth
@@ -57,19 +58,24 @@ jupyter.Kernel.getSpecs({
       .then((kernel) => {
         // execute some code
         console.log("Executing sample code");
+
         var future = kernel.execute({ code: demoSrc });
+
         future.onDone = () => {
           // quit the demo when done, but leave the kernel around
           var future2 = kernel.execute({
             code: "def fib1(n):\n    return fib(n + 1)\nprint(fib1(4))",
           });
+
           future2.onDone = () => {
             process.exit(0);
           };
+
           future2.onIOPub = (msg) => {
             console.log("Received message", msg);
           };
         };
+
         future.onIOPub = (msg) => {
           // print received messages
           console.log("Received message:", msg);
