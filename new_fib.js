@@ -11,10 +11,10 @@ var jupyter = require("@jupyterlab/services");
 var gatewayUrl = process.env.BASE_GATEWAY_HTTP_URL || "http://localhost:8888";
 var gatewayWsUrl = process.env.BASE_GATEWAY_WS_URL || "ws://localhost:8888";
 
-var demoLang = process.env.DEMO_LANG || "python";
+var demoLang = process.env.DEMO_LANG || "python3";
 var demoInfo = {
-  python: {
-    kernelName: "python",
+  python3: {
+    kernelName: "python3",
     filename: "test_fib.py",
   },
 }[demoLang];
@@ -47,55 +47,15 @@ const kernelManager = new jupyter.KernelManager({
   serverSettings: settings,
 });
 
-// get info about the available kernels
-jupyter.KernelSpecAPI.getSpecs(settings)
-  .then((kernelSpecs) => {
-    console.log("Available kernelspecs:", kernelSpecs);
+(async () => {
+  const kernel = await kernelManager.startNew({ name: "python3" });
 
-    // request a new kernel
-    console.log("Starting kernel:", demoLang);
-    kernelManager
-      .startNew({
-        name: demoInfo.kernelName,
-      })
-      .then(async (kernel) => {
-        // execute some code
-        console.log("Executing sample code");
+  kernel.statusChanged.connect((_, status) => console.log(status));
 
-        const future = kernel.requestExecute(
-          {
-            code: demoSrc,
-          },
-          false
-        );
+  const future = kernel.requestExecute({ code: demoSrc });
 
-        future.onIOPub = (msg) => {
-          console.log("Received message", msg);
-        };
+  future.onIOPub = (msg) =>
+    msg.header.msg_type !== "status" && console.log(msg);
 
-        await future.done;
-
-        let future2 = kernel.requestExecute(
-          {
-            code: "def fib1(n):\n    return fib(n + 1)\nprint(fib1(4))",
-          },
-          false
-        );
-
-        future2.onIOPub = (msg) => {
-          console.log("Received message", msg);
-        };
-
-        await future2.done;
-
-        process.exit(0);
-      })
-      .catch((req) => {
-        console.log("Error starting new kernel:", req);
-        process.exit(1);
-      });
-  })
-  .catch((req) => {
-    console.log("Error fetching kernel specs:", req);
-    process.exit(1);
-  });
+  await future.done;
+})();
